@@ -300,45 +300,52 @@ class Maze
   end
 
   def self.play maze = nil, options = {}
-    options, maze = maze, nil if maze.is_a?(Hash)
-    options[:length] ||= 11
-    options[:width]  ||= 11
-    maze = Maze.new options unless maze
-    options[:watch] ||= true
-    options[:delay] ||= 0.03
+    begin
+      options, maze = maze, nil if maze.is_a?(Hash)
 
-    command = nil
-    result = nil
-    loop do
-      print `clear`
-      if maze.generated && !maze.start_cell && !maze.end_cell
-        maze.set_start_cell maze.random_cell
-        maze.set_end_cell   maze.random_cell {|cell| cell != maze.start_cell }
-        maze.set_highlight  maze.start_cell
-        maze.start_cell.walk_on
-      end
-      puts "Congratulations, you have navigated the maze" if maze.solved?
-      puts "Last command: #{command}" if command
-      puts result if result
+      VER::start_ncurses if options[:ncurses]
+      out = options[:ncurses] ? VER::Window.root_window : $stdout
+      options[:length] ||= 11
+      options[:width]  ||= 11
+      maze = Maze.new options unless maze
+      options[:watch] ||= true
+      options[:delay] ||= 0.03
+
+      command = nil
       result = nil
-      maze.display options
-      puts "Command: "
-      command = $stdin.gets.strip
-      case command
-        when /^q/ ; break
-        when /^w/ ; options[:watch] = !options[:watch] ; result = "Watch is #{options[:watch]}"
-        when /^n/ ; maze.setup_board(:circular => false)
-        when /^c/ ; maze.setup_board(:circular => true)
-        when /^g/ ; maze.generate(options)
-        when /^s/ ; maze.solve(options)
-        when /^D/ ; options[:darkness] = !options[:darkness]
-        when /^(\d+)\s?,\s?(\d+)$/ ; maze = Maze.new options.merge!({:length => $1, :width => $2})
-        when /^([123])$/ ; options[:cell_display_size] = $1.to_i
-        when /^d(elay)?(=|\s?)([0-9.]+)/ ; options[:delay] = $3.to_f ; result = "Delay is #{options[:delay]}"
-        when /^([ijkl])/ ; maze.move dirs = {'i' => :north, 'j' => :west, 'k' => :south, 'l' => :east}[$1] if maze.highlighted_cell
+      loop do
+#        print `clear`
+        if maze.generated && !maze.start_cell && !maze.end_cell
+          maze.set_start_cell maze.random_cell
+          maze.set_end_cell   maze.random_cell {|cell| cell != maze.start_cell }
+          maze.set_highlight  maze.start_cell
+          maze.start_cell.walk_on
+        end
+        puts "Congratulations, you have navigated the maze" if maze.solved?
+        puts "Last command: #{command}" if command
+        puts result if result
+        result = nil
+        maze.display options
+        puts "Command: "
+        command = $stdin.gets.strip
+        case command
+          when /^q/ ; break
+          when /^w/ ; options[:watch] = !options[:watch] ; result = "Watch is #{options[:watch]}"
+          when /^n/ ; maze.setup_board(:circular => false)
+          when /^c/ ; maze.setup_board(:circular => true)
+          when /^g/ ; maze.generate(options)
+          when /^s/ ; maze.solve(options)
+          when /^D/ ; options[:darkness] = !options[:darkness]
+          when /^(\d+)\s?,\s?(\d+)$/ ; maze = Maze.new options.merge!({:length => $1, :width => $2})
+          when /^([123])$/ ; options[:cell_display_size] = $1.to_i
+          when /^d(elay)?(=|\s?)([0-9.]+)/ ; options[:delay] = $3.to_f ; result = "Delay is #{options[:delay]}"
+          when /^([ijkl])/ ; maze.move dirs = {'i' => :north, 'j' => :west, 'k' => :south, 'l' => :east}[$1] if maze.highlighted_cell
+        end
       end
+      maze
+    ensure
+      VER::stop_ncurses if options[:ncurses]
     end
-    maze
   end
 
   def self.cli args

@@ -261,27 +261,52 @@ class Maze
     end while !list.empty?
   end
 
+  def display_curses options = {}
+    window = options[:window] || VER::Window.root_window
+    cell_size = options[:cell_display_size] ||= 2
+    wall_char = options[:wall_char] ||= '#'
+    pad_top    = pad_left  = (cell_size == 1)
+    pad_bottom = pad_right = (cell_size  < 3)
+    pad_length = length + (pad_left ? 1 : 0) + (pad_right  ? 1 : 0)
+    pad_width  = width + (pad_top  ? 1 : 0) + (pad_bottom ? 1 : 0)
+    pad_width.times  {|y| window.print_yx(wall_char,         y,          0) } if pad_left
+    pad_width.times  {|y| window.print_yx(wall_char,         y, pad_length) } if pad_right
+    pad_length.times {|x| window.print_yx(wall_char,         0,          0) } if pad_top
+    pad_length.times {|x| window.print_yx(wall_char, pad_width,          0) } if pad_bottom
+    x_offset = y_offset = pad_top ? 1 : 0
+    @board.each_with_index {|row,y|
+      row.each_with_index {|cell,x|
+        output = cell ? cell.display(options) : fake
+        output.each_with_index {|line, num| window.print_yx(line.join, (y + y_offset + num), (x + x_offset)) }
+      }
+    }
+  end
+
   def display options = {}
     options = options.dup # don't pass our changes back
     options[:darkness] = false if solved? # show the whole board once solved
-    options[:cell_display_size] ||= 2
+    cell_size = options[:cell_display_size] ||= 2
     wall_char = options[:wall_char] ||= '#'
     fake = [[wall_char, wall_char], [wall_char, wall_char]]
-    back_pad   = wall_char                   if (options[:cell_display_size] == 2)
-    display_width = width * options[:cell_display_size] + (back_pad || '').length
-    bottom_pad = (wall_char * display_width) if (options[:cell_display_size] == 2)
-    top_pad    = bottom_pad                  if (options[:cell_display_size] == 3)
-    puts top_pad if top_pad
-    board.each {|cells|
-      rows = cells.inject([]) {|rows, cell|
-        output = cell ? cell.display(options) : fake
-        output.each_with_index {|crow,i| (rows[i] ||= []) << crow }
-        rows
+    if options[:curses]
+      display_curses options # requires curses to already be initialized
+    else
+      back_pad   = wall_char                   if (cell_size == 2)
+      display_width = width * cell_size + (back_pad || '').length
+      bottom_pad = (wall_char * display_width) if (cell_size == 2)
+      top_pad    = bottom_pad                  if (cell_size == 3)
+      puts top_pad if top_pad
+      board.each {|cells|
+        rows = cells.inject([]) {|rows, cell|
+          output = cell ? cell.display(options) : fake
+          output.each_with_index {|crow,i| (rows[i] ||= []) << crow }
+          rows
+        }
+        rows = rows.collect {|row| "#{row.join}#{back_pad}" }
+        puts rows.collect {|row| row }
       }
-      rows = rows.collect {|row| "#{row.join}#{back_pad}" }
-      puts rows.collect {|row| row }
-    }
-    puts bottom_pad if bottom_pad
+      puts bottom_pad if bottom_pad
+    end
     nil
   end
 

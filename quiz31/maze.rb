@@ -301,9 +301,9 @@ class Maze
 
   require 'highline'  # make these options, the program should simply degrade
   require 'rbcurse'
-  def test_for_highline ; @highline ||= begin ;                     require 'highline' ; true ; rescue LoadError ; false ; end ; end
-  def test_for_curses   ; @curses   ||= begin ; test_for_highline ; require 'rbcurses' ; true ; rescue LoadError ; false ; end ; end
-  def read_a_char options = {}
+  def self.test_for_highline ; @highline ||= begin ;                     require 'highline' ; true ; rescue LoadError ; false ; end ; end
+  def self.test_for_curses   ; @curses   ||= begin ; test_for_highline ; require 'rbcurses' ; true ; rescue LoadError ; false ; end ; end
+  def self.read_a_char options = {}
     if test_for_curses
       window = options[:window] || VER::Window.root_window
       tmp = window.getch.chr
@@ -313,7 +313,7 @@ class Maze
       raise "No unbuffered input available"
     end
   end
-  def get_input options = {}
+  def self.get_input options = {}
     input = if options[:curses]
       response = c = read_a_char
       if c == "\e"

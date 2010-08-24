@@ -299,6 +299,34 @@ class Maze
     set_highlight new
   end
 
+  require 'highline'  # make these options, the program should simply degrade
+  require 'rbcurse'
+  def test_for_highline ; @highline ||= begin ;                     require 'highline' ; true ; rescue LoadError ; false ; end ; end
+  def test_for_curses   ; @curses   ||= begin ; test_for_highline ; require 'rbcurses' ; true ; rescue LoadError ; false ; end ; end
+  def read_a_char options = {}
+    if test_for_curses
+      window = options[:window] || VER::Window.root_window
+      tmp = window.getch.chr
+    elsif test_for_highline
+      HighLine::SystemExtensions.get_character.chr
+    else
+      raise "No unbuffered input available"
+    end
+  end
+  def get_input options = {}
+    input = if options[:curses]
+      response = c = read_a_char
+      if c == "\e"
+        loop do
+          response += c = read_a_char
+          break if c =~ /[a-zA-Z]/
+        end
+      end
+      response
+    else
+      $stdin.gets.strip
+    end
+  end
   def self.play maze = nil, options = {}
     begin
       options, maze = maze, nil if maze.is_a?(Hash)

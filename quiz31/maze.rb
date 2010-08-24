@@ -359,7 +359,7 @@ class Maze
 
     catch(:quit) do
       begin
-        VER::start_curses if options[:curses]
+        VER::start_ncurses if options[:curses]
         width, height = HighLine::SystemExtensions.terminal_size
         out = options[:curses] ? VER::Window.create_window(height, width, 0, 0) : $stdout
         options[:length] ||= 11
@@ -405,7 +405,7 @@ class Maze
         end
         maze
       ensure
-        VER::stop_curses if options[:curses]
+        VER::stop_ncurses if options[:curses]
       end
     end
   end

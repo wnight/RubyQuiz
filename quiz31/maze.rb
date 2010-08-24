@@ -3,7 +3,7 @@
 class Array ; def random ; return nil if length.zero? ; entries[rand(length)] ; end ; end
 
 class Cell
-  
+
 	def initialize walls=nil
 		@walls= {}
 		@neighbors= {}
@@ -205,13 +205,13 @@ class Maze
         list.pop
       else
         dir, other = unvisited.random
-        cell.unset_wall dir 
+        cell.unset_wall dir
         list << other
-      end 
+      end
     end while !list.empty?
     set_highlight nil if watch
     @generated = true
-  end 
+  end
 
   def stats
     return nil unless generated
@@ -243,7 +243,7 @@ class Maze
       begin ; print `clear` ; set_highlight cell ; display options ; sleep delay ; end if watch
     }
     set_highlight nil if watch
-  end 
+  end
 
   def crawl(starting_cell, get_neighbors)
     list = [ starting_cell ]

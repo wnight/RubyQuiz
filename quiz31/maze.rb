@@ -324,6 +324,17 @@ class Maze
     set_highlight new
   end
 
+  def self.run_command maze, options = {}
+    str = begin
+      puts 'Enter a ruby command:'
+      cmd = $stdin.gets.strip # Readline.readline
+      maze.instance_eval(cmd).inspect
+    rescue Exception => e
+      ["#{e.class}: #{e.message}",e.backtrace].join("\n\t")
+    end
+    str[0...2048]
+  end
+
   require 'highline'  # make these options, the program should simply degrade
   require 'rbcurse'
   def self.test_for_highline ; @highline ||= begin ;                     require 'highline' ; true ; rescue LoadError ; false ; end ; end

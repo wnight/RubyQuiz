@@ -429,7 +429,7 @@ class Maze
             when /^c/ ; maze.setup_board(:circular => true)
             when /^g/ ; maze.generate(options)
             when /^s/ ; maze.solve(options)
-            when /^;/ ; maze.run_command
+            when /^;/ ; out.call run_command(maze, options)
             when /^D/ ; options[:darkness] = !options[:darkness]
             when /^(\d+)\s?,\s?(\d+)$/ ; maze = Maze.new options.merge!({:length => $1, :width => $2})
             when /^([123])$/ ; options[:cell_display_size] = $1.to_i

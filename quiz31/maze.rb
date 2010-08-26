@@ -354,7 +354,7 @@ class Maze
       response = c = read_a_char
       if c == "\e"
         loop do
-          response += c = read_a_char
+          response += c = read_a_char(options)
           break if c =~ /[a-zA-Z]/
         end
       end
@@ -371,13 +371,17 @@ class Maze
     catch(:quit) do
       begin
         VER::start_ncurses if options[:curses]
-        width, height = HighLine::SystemExtensions.terminal_size
-        out = options[:curses] ? VER::Window.create_window(height, width, 0, 0) : $stdout
+        $out = out = if curses
+          board, cli = setup_windows options
+          lambda {|str| window.print str, -1 }
+        else
+          lambda {|str| puts str }
+        end
         options[:length] ||= 11
         options[:width]  ||= 11
-        maze = Maze.new options unless maze
         options[:watch] ||= true
         options[:delay] ||= 0.03
+        maze = Maze.new options unless maze
 
         command = nil
         result = nil
@@ -389,16 +393,18 @@ class Maze
             maze.set_highlight  maze.start_cell
             maze.start_cell.walk_on
           end
-          puts "Congratulations, you have navigated the maze" if maze.solved?
-          puts "Last command: #{command}" if command
-          puts result if result
+          out.call "Congratulations, you have navigated the maze" if maze.solved?
+          window.refresh if curses
+          out.call "Last command: #{command}" if command
+          window.refresh if curses
+          out.call result if result
+          window.refresh if curses
           result = nil
           maze.display options
-          puts "Command: "
-          out.print "NCommand: ", -1
-          out.refresh
-          command = curses ? out.getch.chr : $stdin.gets.strip
-          out.print "-> #{command}", -1
+          out.call "Command: "
+          window.refresh if curses
+          command = get_input options
+          out.call "-> #{command}"
           case command
             when /^q/ ; throw :quit
             when /^w/ ; options[:watch] = !options[:watch] ; result = "Watch is #{options[:watch]}"

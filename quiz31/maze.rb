@@ -442,6 +442,7 @@ class Maze
         VER::stop_ncurses if options[:curses]
       end
     end
+    maze
   end
 
   def self.cli args

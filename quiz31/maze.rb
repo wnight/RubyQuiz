@@ -390,7 +390,7 @@ class Maze
         VER::start_ncurses if options[:curses]
         $out = out = if curses
           board, cli = setup_windows options
-          lambda {|str| window.print str, -1 }
+          lambda {|str| cli.print str, -1 ; cli.refresh }
         else
           lambda {|str| puts str }
         end
@@ -411,15 +411,11 @@ class Maze
             maze.start_cell.walk_on
           end
           out.call "Congratulations, you have navigated the maze" if maze.solved?
-          window.refresh if curses
           out.call "Last command: #{command}" if command
-          window.refresh if curses
           out.call result if result
-          window.refresh if curses
           result = nil
           maze.display options
           out.call "Command: "
-          window.refresh if curses
           command = get_input options
           out.call "-> #{command}"
           case command

@@ -338,7 +338,7 @@ class Maze
   require 'highline'  # make these options, the program should simply degrade
   require 'rbcurse'
   def self.test_for_highline ; @highline ||= begin ;                     require 'highline' ; true ; rescue LoadError ; false ; end ; end
-  def self.test_for_curses   ; @curses   ||= begin ; test_for_highline ; require 'rbcurses' ; true ; rescue LoadError ; false ; end ; end
+  def self.test_for_curses   ; @curses   ||= begin ; test_for_highline ; require 'rbcurse'  ; true ; rescue LoadError ; false ; end ; end
   def self.read_a_char options = {}
     if test_for_curses
       window = options[:window] || VER::Window.root_window

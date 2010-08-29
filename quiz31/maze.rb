@@ -321,7 +321,11 @@ class Maze
     @board.each_with_index {|row,y|
       row.each_with_index {|cell,x|
         output = cell ? cell.display(options) : fake
-        output.each_with_index {|line, num| window.print_yx(line.join, (y + y_offset + num), (x + x_offset)) }
+        output.each_with_index {|line, num|
+          oy = y * cell_size + y_offset + num
+          ox = x * cell_size + x_offset
+          window.print_yx(line.join, oy, ox)
+        }
       }
     }
   end

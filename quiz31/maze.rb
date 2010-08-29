@@ -477,6 +477,7 @@ class Maze
           out.call "-> #{command}"
           case command
             when /^q/ ; throw :quit
+            when /^o/ ; out.call options.inspect
             when /^w/ ; options[:watch] = !options[:watch] ; result = "Watch is #{options[:watch]}"
             when /^n/ ; maze.setup_board(:circular => false)
             when /^c/ ; maze.setup_board(:circular => true)

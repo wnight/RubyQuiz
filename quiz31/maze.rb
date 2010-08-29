@@ -305,7 +305,7 @@ class Maze
   end
 
   def display_curses options = {}
-    window = options[:window] || VER::Window.root_window
+    window = options[:window] || Window.stdscr
     cell_size = options[:cell_display_size] ||= 2
     wall_char = options[:wall_char] ||= '#'
     pad_top    = pad_left  = (cell_size == 1)
@@ -316,7 +316,8 @@ class Maze
     pad_width.times  {|y| window.print_yx(wall_char,         y, pad_length) } if pad_right
     pad_length.times {|x| window.print_yx(wall_char,         0,          0) } if pad_top
     pad_length.times {|x| window.print_yx(wall_char, pad_width,          0) } if pad_bottom
-    x_offset = y_offset = pad_top ? 1 : 0
+    y_offset = pad_top  ? 1 : 0
+    x_offset = pad_left ? 1 : 0
     @board.each_with_index {|row,y|
       row.each_with_index {|cell,x|
         output = cell ? cell.display(options) : fake

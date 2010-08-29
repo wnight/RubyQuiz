@@ -424,8 +424,8 @@ class Maze
   end
 
   def self.setup_windows options = {}
-    cli_height = 6
     width, height = HighLine::SystemExtensions.terminal_size
+    cli_height = 6
     board = Window.new(:top =>                    0 , :left => 0, :height => (height - cli_height), :width => width)
     cli   = Window.new(:top => (height - cli_height), :left => 0, :height =>           cli_height , :width => width)
     [board, cli].collect {|win| win.refresh ; border_and_return_sub win }

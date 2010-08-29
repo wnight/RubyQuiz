@@ -433,15 +433,21 @@ class Maze
 
   def self.play maze = nil, options = {}
     options, maze = maze, nil if maze.is_a?(Hash)
-    curses = options[:curses] || test_for_curses
-    p [:nc, curses]
+    curses = options.member?(:curses) ? options[:curses] : test_for_curses
 
     catch(:quit) do
       begin
-        VER::start_ncurses if options[:curses]
-        $out = out = if curses
+        out = if curses
+#          VER::start_ncurses if options[:curses]
+          Ncurses.initscr
+          Ncurses.nl
+          Ncurses.noecho
+          Ncurses.curs_set(0)
+          Ncurses.stdscr.nodelay(true)
+          Ncurses.timeout(0)
           board, cli = setup_windows options
-          lambda {|str| cli.print str, -1 ; cli.refresh }
+          options[:window] = board
+          lambda {|str| cli.print str ; cli.refresh }
         else
           lambda {|str| puts str }
         end
@@ -486,7 +492,9 @@ class Maze
         end
         maze
       ensure
-        VER::stop_ncurses if options[:curses]
+#        VER::stop_ncurses if options[:curses]
+        Ncurses.curs_set(1) # cbreak / nocbreak
+        Ncurses.endwin()
       end
     end
     maze

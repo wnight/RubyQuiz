@@ -125,6 +125,49 @@ class Cell
 end
 
 class Maze
+
+  class Window
+    require 'highline/system_extensions'
+    attr_reader :x, :y, :height, :width, :window
+    def initialize options = {}
+      @height, @width = options[:height], options[:width]
+      @y = options[:y] || options[:top]  || 0
+      @x = options[:x] || options[:left] || 0
+      @window = options[:window] || Ncurses::WINDOW.new(height, width, top, left)
+    end
+    alias :top  :y
+    alias :left :x
+    def print_xy str, x, y
+      Ncurses.mvwprintw window, y, x, str
+    end
+    def print_yx str, y, x
+      print_xy str, x, y
+    end
+    def refresh ; window.refresh ; end
+    def pos ; [x, y] ; end
+    def print_border color
+      top    = '/'  + ('-' * (width - 2)) + '\\'
+      mid    = '|'  + (' ' * (width - 2)) + '|'
+      bottom = '\\' + ('-' * (width - 2)) + '/'
+      print_yx(top   ,      0    , 0)
+      print_yx(bottom, height - 1, 0)
+      (height - 2).times {|y|
+        print_yx mid ,      y + 1, 0
+      }
+    end
+    def scroll n = 1
+      Ncurses.wscrl window, n
+    end
+    def print str
+      scroll
+      print_xy str, 0, height - 1
+    end
+    def self.stdscr
+      height, width = HighLine::SystemExtensions.terminal_size
+      new :height => height, :width => width, :window => Ncurses.stdscr
+    end
+  end
+
   attr_reader :board, :length, :width, :highlighted_cell, :generated, :start_cell, :end_cell
 
 	def initialize options = {}

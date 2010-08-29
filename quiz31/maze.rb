@@ -415,19 +415,20 @@ class Maze
   end
 
   def self.border_and_return_sub window
-    y, x = window.pos
+    x, y = window.pos
     h, w = window.height, window.width
-    p [:y, y, :x, x, :h, h, :w, w]
-    window.print_border(0, 0, h - 1, w - 1,5)
-    new = VER::Window.create_window(h - 2, w - 2, y + 1, x + 1)
+    window.print_border 6
+    window.refresh
+    inner = Window.new :height => h - 2, :width => w - 2, :y => y + 1, :x => x + 1
+    inner
   end
 
   def self.setup_windows options = {}
     cli_height = 6
     width, height = HighLine::SystemExtensions.terminal_size
-    board = VER::Window.create_window(height - cli_height, width,                   0, 0)
-    cli   = VER::Window.create_window(         cli_height, width, height - cli_height, 0)
-    [board, cli].collect {|win| border_and_return_sub win }
+    board = Window.new(:top =>                    0 , :left => 0, :height => (height - cli_height), :width => width)
+    cli   = Window.new(:top => (height - cli_height), :left => 0, :height =>           cli_height , :width => width)
+    [board, cli].collect {|win| win.refresh ; border_and_return_sub win }
   end
 
   def self.play maze = nil, options = {}

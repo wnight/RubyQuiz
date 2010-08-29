@@ -391,7 +391,8 @@ class Maze
   def self.read_a_char options = {}
     if test_for_curses
       window = options[:window] || VER::Window.root_window
-      tmp = window.getch.chr
+      asc = window.getch
+      (asc < 0 || asc > 255) ? nil : asc.chr
     elsif test_for_highline
       HighLine::SystemExtensions.get_character.chr
     else

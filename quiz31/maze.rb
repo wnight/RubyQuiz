@@ -328,6 +328,7 @@ class Maze
         }
       }
     }
+    window.refresh
   end
 
   def display options = {}

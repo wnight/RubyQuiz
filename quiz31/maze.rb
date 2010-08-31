@@ -445,13 +445,13 @@ class Maze
     catch(:quit) do
       begin
         out = if curses
-#          VER::start_ncurses if options[:curses]
-          Ncurses.initscr
-          Ncurses.nl
-          Ncurses.noecho
-          Ncurses.curs_set(0)
-          Ncurses.stdscr.nodelay(true)
-          Ncurses.timeout(0)
+          VER::start_ncurses
+#          Ncurses.initscr
+#          Ncurses.nl
+#          Ncurses.noecho
+#          Ncurses.curs_set(0)
+#          Ncurses.stdscr.nodelay(true)
+#          Ncurses.timeout(0)
           board, cli = setup_windows options
           options[:window] = board
           lambda {|str| cli.print str ; cli.refresh }
@@ -500,7 +500,7 @@ class Maze
         maze
       ensure
         if options[:curses]
-          VER::stop_ncurses if options[:curses]
+          VER::stop_ncurses
 #          Ncurses.curs_set(1) # cbreak / nocbreak
 #          Ncurses.endwin()
         end

@@ -399,7 +399,7 @@ class Maze
   def self.read_a_char options = {}
     if test_for_curses
       asc = Ncurses.getch
-      (asc < 0 || asc > 255) ? nil : asc.chr
+      (0..255) === asc ? asc.chr : nil
     elsif test_for_highline
       HighLine::SystemExtensions.get_character.chr
     else

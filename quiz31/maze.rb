@@ -291,12 +291,15 @@ class Maze
     end
   end
 
+  def move_to_cell cell
+    cell.walk_on unless solved? # only store footprints while trying to solve the maze
+    set_highlight cell
+  end
+
   def move dir
     return false unless cell = highlighted_cell
     new = cell.neighbors[dir] if cell.passable?(dir,false)
-    return false unless new
-    new.walk_on unless solved? # only store footprints while trying to solve the maze
-    set_highlight new
+    move_to_cell new if new
   end
 
   def self.play maze = nil, options = {}

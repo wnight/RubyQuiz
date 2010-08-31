@@ -440,7 +440,7 @@ class Maze
 
   def self.play maze = nil, options = {}
     options, maze = maze, nil if maze.is_a?(Hash)
-    curses = options.member?(:curses) ? options[:curses] : test_for_curses
+    curses = options.member?(:curses) ? options[:curses] : false
 
     catch(:quit) do
       begin

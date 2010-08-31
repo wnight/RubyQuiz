@@ -125,7 +125,7 @@ class Cell
 end
 
 class Maze
-  attr_reader :board, :length, :width, :highlighted_cell, :generated, :start_cell, :end_cell
+  attr_reader :board, :length, :width, :highlighted_cell, :generated, :start_cell, :end_cell, :move_log
 
 	def initialize options = {}
     setup_board options
@@ -293,6 +293,8 @@ class Maze
 
   def move_to_cell cell
     cell.walk_on unless solved? # only store footprints while trying to solve the maze
+    @move_log ||= []
+    @move_log << cell
     set_highlight cell
   end
 

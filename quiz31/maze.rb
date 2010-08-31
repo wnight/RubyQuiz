@@ -409,7 +409,7 @@ class Maze
   end
   def self.get_input options = {}
     input = if options[:curses]
-      response = c = read_a_char
+      response = c = read_a_char(options)
       if c == "\e"
         loop do
           response += c = read_a_char(options)

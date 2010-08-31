@@ -473,11 +473,11 @@ class Maze
             maze.set_highlight  maze.start_cell
             maze.start_cell.walk_on
           end
+          maze.display options
           out.call "Congratulations, you have navigated the maze" if maze.solved?
           out.call "Last command: #{command}" if command
           out.call result if result
           result = nil
-          maze.display options
           out.call "Command: "
           command = get_input options
           case command

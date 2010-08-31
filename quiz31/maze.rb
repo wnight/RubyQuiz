@@ -145,7 +145,7 @@ class Cell
     base_floor = walked_on? ? walked : open
     floor = (highlight_char if highlight?) || (contents[0..0] if contents) || (wall if !visited?) || base_floor
 
-    return floor if options[:cell_display_size] == 1
+    return [[floor]] if options[:cell_display_size] == 1
 
     north, south, east, west = %w(north south east west).collect {|dir| passable?(dir, false) ? base_floor  : wall }
     nw, ne, se, sw =           %w(nw ne se sw          ).collect {|dir| options["#{dir}_wall".to_sym]      || wall }

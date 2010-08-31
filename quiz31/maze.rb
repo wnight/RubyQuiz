@@ -317,7 +317,7 @@ class Maze
     options = options.dup
     window = options[:window] || Window.stdscr
     cell_size = options[:cell_display_size] ||= 2
-    wall_char = options[:wall_char] ||= '#'
+    wall_char = options[:wall] ||= '#'
     pad_top    = pad_left  = (cell_size == 1)
     pad_bottom = pad_right = (cell_size  < 3)
     pad_length = length + (pad_left ? 1 : 0) + (pad_right  ? 1 : 0)
@@ -342,7 +342,7 @@ class Maze
     options = options.dup
     options[:darkness] = false if solved? # show the whole board once solved
     cell_size = options[:cell_display_size] ||= 2
-    wall_char = options[:wall_char] ||= '#'
+    wall_char = options[:wall] ||= '#'
     fake = [[wall_char, wall_char], [wall_char, wall_char]]
     if options[:curses]
       display_curses options # requires curses to already be initialized

@@ -314,6 +314,7 @@ class Maze
   end
 
   def display_curses options = {}
+    options = options.dup
     window = options[:window] || Window.stdscr
     cell_size = options[:cell_display_size] ||= 2
     wall_char = options[:wall_char] ||= '#'
@@ -338,7 +339,7 @@ class Maze
   end
 
   def display options = {}
-    options = options.dup # don't pass our changes back
+    options = options.dup
     options[:darkness] = false if solved? # show the whole board once solved
     cell_size = options[:cell_display_size] ||= 2
     wall_char = options[:wall_char] ||= '#'

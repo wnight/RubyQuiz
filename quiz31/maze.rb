@@ -480,7 +480,6 @@ class Maze
           maze.display options
           out.call "Command: "
           command = get_input options
-          out.call "-> #{command}"
           case command
             when /^q/ ; throw :quit
             when /^o/ ; out.call options.inspect

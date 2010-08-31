@@ -332,7 +332,7 @@ class Maze
       dy = y * cell_size + y_offset
       row.each_with_index {|cell,x|
         dx = x * cell_size + x_offset
-        cell.display_curses dy, dx, options
+        cell.display_curses dy, dx, options if cell
       }
     }
     window.refresh

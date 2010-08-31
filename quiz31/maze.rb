@@ -500,9 +500,11 @@ class Maze
         end
         maze
       ensure
-#        VER::stop_ncurses if options[:curses]
-        Ncurses.curs_set(1) # cbreak / nocbreak
-        Ncurses.endwin()
+        if options[:curses]
+          VER::stop_ncurses if options[:curses]
+#          Ncurses.curs_set(1) # cbreak / nocbreak
+#          Ncurses.endwin()
+        end
       end
     end
     maze

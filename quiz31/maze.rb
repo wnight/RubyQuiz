@@ -41,7 +41,7 @@ class Window
     print_xy str, 0, height - 1
   end
   def self.stdscr
-    height, width = HighLine::SystemExtensions.terminal_size
+    width, height = Ncurses.COLS, Ncurses.LINES
     new :height => height, :width => width, :window => Ncurses.stdscr
   end
 end
@@ -432,7 +432,7 @@ class Maze
   end
 
   def self.setup_windows options = {}
-    width, height = HighLine::SystemExtensions.terminal_size
+    width, height = Ncurses.COLS, Ncurses.LINES
     cli_height = 6
     board = Window.new(:top =>                    0 , :left => 0, :height => (height - cli_height), :width => width)
     cli   = Window.new(:top => (height - cli_height), :left => 0, :height =>           cli_height , :width => width)

@@ -251,7 +251,7 @@ class Maze
     list = [ starting_cell ]
     begin
       cell = list.last
-      begin ; print `clear` ; set_highlight cell ; display options ; sleep delay ; end if watch
+      begin ; set_highlight cell ; display options ; sleep delay ; end if watch
       unvisited = cell.unvisited_neighbors
       if unvisited.empty?
         list.pop
@@ -292,7 +292,7 @@ class Maze
     starting_cell = random_cell
     crawl( starting_cell, 'not_walked_on_neighbors' ) {|cell, dir|
       cell.walk_on
-      begin ; print `clear` ; set_highlight cell ; display options ; sleep delay ; end if watch
+      begin ; set_highlight cell ; display options ; sleep delay ; end if watch
     }
     set_highlight nil if watch
   end
@@ -350,6 +350,7 @@ class Maze
       display_width = width * cell_size + (back_pad || '').length
       bottom_pad = (wall_char * display_width) if (cell_size == 2)
       top_pad    = bottom_pad                  if (cell_size == 3)
+      print `clear`
       puts top_pad if top_pad
       board.each {|cells|
         rows = cells.inject([]) {|rows, cell|
@@ -466,7 +467,6 @@ class Maze
         command = nil
         result = nil
         loop do
-#          print `clear`
           if maze.generated && !maze.start_cell && !maze.end_cell
             maze.set_start_cell maze.random_cell
             maze.set_end_cell   maze.random_cell {|cell| cell != maze.start_cell }

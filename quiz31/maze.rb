@@ -398,8 +398,7 @@ class Maze
   def self.test_for_curses   ; @curses   ||= begin ; test_for_highline ; require 'rbcurse'  ; true ; rescue LoadError ; false ; end ; end
   def self.read_a_char options = {}
     if test_for_curses
-      window = options[:window] || VER::Window.root_window
-      asc = window.getch
+      asc = Ncurses.getch
       (asc < 0 || asc > 255) ? nil : asc.chr
     elsif test_for_highline
       HighLine::SystemExtensions.get_character.chr

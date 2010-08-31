@@ -343,6 +343,7 @@ class Maze
         when /^d(elay)?(=|\s?)([0-9.]+)/ ; options[:delay] = $3.to_f ; result = "Delay is #{options[:delay]}"
         when /^([ijkl])/ ; maze.move dirs = {'i' => :north, 'j' => :west, 'k' => :south, 'l' => :east}[$1] if maze.highlighted_cell
         when /^f/ ; choices = maze.highlighted_cell.not_walked_on_neighbors ; next unless choices.length == 1 ; maze.move choices.first.first
+        when /^r/ ; load __FILE__
         when /^u/
             ml = maze.move_log.dup
             move = ml.pop

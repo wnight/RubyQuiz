@@ -163,6 +163,13 @@ class Cell
     output[0...-1].collect {|a| a[0...-1] } # 2x2 output
   end
 
+  def display_curses top, left, options = {}
+    window = options[:window] || Window.stdscr
+    content = display(options)
+    content.each_with_index {|line, row_offset| window.print_yx line.join, top + row_offset, left }
+    :curses
+  end
+
   def walk_on
     @walked_on=true
   end
@@ -320,14 +327,11 @@ class Maze
     pad_length.times {|x| window.print_yx(wall_char, pad_width,          0) } if pad_bottom
     y_offset = pad_top  ? 1 : 0
     x_offset = pad_left ? 1 : 0
-    @board.each_with_index {|row,y|
+    board.each_with_index {|row, y|
+      dy = y * cell_size + y_offset
       row.each_with_index {|cell,x|
-        output = cell ? cell.display(options) : fake
-        output.each_with_index {|line, num|
-          oy = y * cell_size + y_offset + num
-          ox = x * cell_size + x_offset
-          window.print_yx(line.join, oy, ox)
-        }
+        dx = x * cell_size + x_offset
+        cell.display_curses dy, dx, options
       }
     }
     window.refresh

@@ -184,7 +184,7 @@ class Maze
   end
 
   def wipe_designations
-    @highlighted_cell = @start_cell = @end_cell = @generated = @solved = nil
+    @highlighted_cell = @start_cell = @end_cell = @generated = @solved = @move_log = nil
   end
 
   def setup_board options = {}

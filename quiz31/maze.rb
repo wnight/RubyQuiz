@@ -486,8 +486,7 @@ class Maze
           if maze.generated && !maze.start_cell && !maze.end_cell
             maze.set_start_cell maze.random_cell
             maze.set_end_cell   maze.random_cell {|cell| cell != maze.start_cell }
-            maze.set_highlight  maze.start_cell
-            maze.start_cell.walk_on
+            maze.move_to_cell maze.start_cell
           end
           maze.display options
           out.call "Congratulations, you have navigated the maze" if maze.solved?

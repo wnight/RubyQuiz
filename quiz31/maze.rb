@@ -188,10 +188,10 @@ class Maze
   end
 
   def setup_board options = {}
-    length, width = options[:length], options[:width]
-    raise "length and width must be fixnums greater than zero" unless [length, width].all? {|n| n.respond_to?(:to_i) && !n.to_i.zero? }
-    length, width = [length, width].collect {|n| n.to_i }
-    @length, @width = length, width
+    l = options[:length] || length
+    w = options[:width]  || width
+    raise "length and width must be fixnums greater than zero" unless [l, w].all? {|n| n.respond_to?(:to_i) && !n.to_i.zero? }
+    @length, @width = l.to_i, w.to_i
     wipe_designations
     circular = options[:circular]
 		@board=[[]]

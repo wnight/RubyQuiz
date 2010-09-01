@@ -215,6 +215,16 @@ class Maze
 		@board
 	end
 
+  def location_of target
+    return nil unless target
+    board.each_with_index {|row,  y|
+      row.each_with_index {|cell, x|
+        return [y,x] if cell == target
+      }
+    }
+    nil
+  end
+
   def set_highlight cell
     @highlighted_cell.unset_highlight if @highlighted_cell
     return if (@highlighted_cell = cell).nil?

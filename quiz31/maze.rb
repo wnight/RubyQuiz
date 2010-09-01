@@ -500,8 +500,8 @@ class Maze
             when /^q/ ; throw :quit
             when /^o/ ; out.call options.inspect
             when /^w/ ; options[:watch] = !options[:watch] ; result = "Watch is #{options[:watch]}"
-            when /^n/ ; maze.setup_board(:circular => false)
-            when /^c/ ; maze.setup_board(:circular => true)
+            when /^n/ ; maze.setup_board options
+            when /^c/ ; options[:circular] = !options[:circular]
             when /^g/ ; maze.generate(options)
             when /^s/ ; maze.solve(options)
             when /^;/ ; out.call run_command(maze, options)

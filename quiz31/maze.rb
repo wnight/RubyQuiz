@@ -511,16 +511,16 @@ class Maze
                 end
                 next unless move
                 maze.move_to_cell move
-              end
             end
-            maze
+          end
+          maze
       ensure
         if options[:curses]
           VER::stop_ncurses
 #          Ncurses.curs_set(1) # cbreak / nocbreak
 #          Ncurses.endwin()
         end
-      en
+      end
     end
     maze
   end

@@ -385,9 +385,11 @@ class Maze
   end
 
   def move_to_cell cell
-    cell.walk_on unless solved? # only store footprints while trying to solve the maze
-    @move_log ||= []
-    @move_log << cell
+    unless solved?
+      cell.walk_on # only store footprints while trying to solve the maze
+      @move_log ||= []
+      @move_log << cell
+    end
     set_highlight cell
   end
 

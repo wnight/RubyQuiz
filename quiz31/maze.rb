@@ -33,12 +33,15 @@ class Window
     }
   end
   def scroll n = 1
-    window.scroll
-#    Ncurses.wscrl window, n
+#    window.scroll n
+    Ncurses.wscrl window, n
   end
   def print str
     scroll
     print_xy str, 0, height - 1
+  end
+  def scroll_ok state = true
+    window.scrollok state
   end
   def self.stdscr
     width, height = Ncurses.COLS, Ncurses.LINES
@@ -445,6 +448,7 @@ class Maze
     window.print_border 6
     window.refresh
     inner = Window.new :height => h - 2, :width => w - 2, :y => y + 1, :x => x + 1
+    inner.scroll_ok
     inner
   end
 

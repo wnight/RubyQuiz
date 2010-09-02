@@ -515,10 +515,11 @@ class Maze
             when /^([123])$/ ; options[:cell_display_size] = $1.to_i
             when /^d(elay)?(=|\s?)([0-9.]+)/ ; options[:delay] = $3.to_f ; result = "Delay is #{options[:delay]}"
             when /^([ijkl])/ ; maze.move dirs = {'i' => :north, 'j' => :west, 'k' => :south, 'l' => :east}[$1] if maze.highlighted_cell
-            when /^f/ ; choices = maze.highlighted_cell.not_walked_on_neighbors ; next unless choices.length == 1 ; maze.move choices.first.first
+            when /^f/ ; next unless maze.highlighted_cell ; choices = maze.highlighted_cell.not_walked_on_neighbors ; next unless choices.length == 1 ; maze.move choices.first.first
             when /^r/ ; load __FILE__
             when /^u/
-                ml = maze.move_log.dup
+                next unless ml = maze.move_log
+                ml = ml.dup
                 move = ml.pop
                 loop do
                     break if move.not_walked_on_neighbors.length > 0

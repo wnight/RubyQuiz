@@ -419,8 +419,8 @@ class Maze
   def self.test_for_curses   ; @curses   ||= begin ; require 'rbcurse'  ; true ; rescue LoadError ; false ; end ; end
   def self.read_a_char options = {}
     if test_for_curses
-      asc = Ncurses.getch
-      (0..255) === asc ? asc.chr : nil
+      key = Ncurses.getch
+      -1 != key ? Ncurses.keyname(key) : nil
     elsif test_for_highline
       HighLine::SystemExtensions.get_character.chr
     else

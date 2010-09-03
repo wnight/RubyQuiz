@@ -333,8 +333,8 @@ class Maze
     window = options[:window] || Window.stdscr
     cell_size = options[:cell_display_size] ||= 2
     wall_char = options[:wall] ||= '#'
-    pad_top    = pad_left  = (cell_size == 1)
-    pad_bottom = pad_right = (cell_size  < 3)
+    pad_top    = pad_left  = (cell_size < 2)
+    pad_bottom = pad_right = (cell_size < 3)
     pad_length = length + (pad_left ? 1 : 0) + (pad_right  ? 1 : 0)
     pad_width  = width + (pad_top  ? 1 : 0) + (pad_bottom ? 1 : 0)
     pad_width.times  {|y| window.print_yx(wall_char,         y,          0) } if pad_left

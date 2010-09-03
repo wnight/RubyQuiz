@@ -506,14 +506,14 @@ class Maze
             when /^q/ ; throw :quit
             when /^o/ ; out.call options.inspect
             when /^w/ ; options[:watch] = !options[:watch] ; result = "Watch is #{options[:watch]}"
-            when /^n/ ; maze.setup_board options
+            when /^n/ ; maze.setup_board options ; board.clear if board
             when /^c/ ; options[:circular] = !options[:circular]
             when /^g/ ; maze.generate(options)
             when /^s/ ; maze.solve(options)
             when /^;/ ; out.call run_command(maze, options)
             when /^D/ ; options[:darkness] = !options[:darkness]
-            when /^(\d+)\s?,\s?(\d+)$/ ; maze = Maze.new options.merge!({:length => $1, :width => $2})
-            when /^([123])$/ ; options[:cell_display_size] = $1.to_i
+            when /^(\d+)\s?,\s?(\d+)$/ ; maze.setup_board options.merge!({:length => $1, :width => $2}) ; board.clear if board
+            when /^([123])$/ ; options[:cell_display_size] = $1.to_i ; board.clear if board
             when /^d(elay)?(=|\s?)([0-9.]+)/ ; options[:delay] = $3.to_f ; result = "Delay is #{options[:delay]}"
             when /^([ijkl])/ ; maze.move dirs = {'i' => :north, 'j' => :west, 'k' => :south, 'l' => :east}[$1] if maze.highlighted_cell
             when /^f/ ; next unless maze.highlighted_cell ; choices = maze.highlighted_cell.not_walked_on_neighbors ; next unless choices.length == 1 ; maze.move choices.first.first

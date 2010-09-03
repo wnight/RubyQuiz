@@ -270,22 +270,24 @@ class Maze
     start_stack = [current_cell = start_cell]
     distance=current_cell.distance
     until distance==0 do
-      start_stack<< current_cell
       temp=current_cell.neighbors.select {|dir, cell|
+        next unless current_cell.passable? dir
         cell.distance == distance-1
       }[0][1]
       distance-=1
       current_cell=temp
+      start_stack<< current_cell
     end
 
     end_stack = [current_cell = end_cell]
     distance=current_cell.distance
     until distance==0 do
-      end_stack<< current_cell
       current_cell=current_cell.neighbors.select {|dir, cell|
+        next unless current_cell.passable? dir
         cell.distance == distance-1
       }[0][1]
       distance-=1
+      end_stack<< current_cell
     end
  
     start_stack=start_stack.reverse.delete_if {|cell|

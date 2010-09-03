@@ -358,7 +358,7 @@ class Maze
     options[:darkness] = false if solved? # show the whole board once solved
     cell_size = options[:cell_display_size] ||= 2
     wall_char = options[:wall] ||= '#'
-    fake = [[wall_char, wall_char], [wall_char, wall_char]]
+    fake = (0...cell_size).collect { (0...cell_size).collect { wall_char } }
     if options[:curses]
       display_curses options # requires curses to already be initialized
     else

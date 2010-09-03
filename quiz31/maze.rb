@@ -335,12 +335,12 @@ class Maze
     wall_char = options[:wall] ||= '#'
     pad_top    = pad_left  = (cell_size < 2)
     pad_bottom = pad_right = (cell_size < 3)
-    pad_length = length + (pad_left ? 1 : 0) + (pad_right  ? 1 : 0)
-    pad_width  = width + (pad_top  ? 1 : 0) + (pad_bottom ? 1 : 0)
-    pad_width.times  {|y| window.print_yx(wall_char,         y,          0) } if pad_left
-    pad_width.times  {|y| window.print_yx(wall_char,         y, pad_length) } if pad_right
-    pad_length.times {|x| window.print_yx(wall_char,         0,          0) } if pad_top
-    pad_length.times {|x| window.print_yx(wall_char, pad_width,          0) } if pad_bottom
+    pad_horiz = (width  * cell_size) + (pad_left ? 1 : 0) + (pad_right  ? 1 : 0)
+    pad_vert  = (length * cell_size) + (pad_top  ? 1 : 0) + (pad_bottom ? 1 : 0)
+    pad_vert.times  {|y| window.print_yx(wall_char,        y    ,         0    ) } if pad_left
+    pad_vert.times  {|y| window.print_yx(wall_char,        y    , pad_horiz - 1) } if pad_right
+    pad_horiz.times {|x| window.print_yx(wall_char,        0    ,         x    ) } if pad_top
+    pad_horiz.times {|x| window.print_yx(wall_char, pad_vert - 1,         x    ) } if pad_bottom
     y_offset = pad_top  ? 1 : 0
     x_offset = pad_left ? 1 : 0
     board.each_with_index {|row, y|

@@ -155,6 +155,7 @@ class Cell
 
     if options[:darkness] && !walked_on?
       north = south = east = west = nw = ne = se = sw = ' '
+      floor = ' ' unless contents
     end
 
     output =  [ [nw  , north, ne  ],

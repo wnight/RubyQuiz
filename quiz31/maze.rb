@@ -352,6 +352,7 @@ class Maze
     @solved ||= begin
       true if highlighted_cell && highlighted_cell == end_cell # only return and nil, so as not to cache a false
     end
+    @solved.true?
   end
 
   def move dir

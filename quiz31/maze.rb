@@ -262,7 +262,6 @@ class Maze
 
   #options[] keys; :start_cell, :end_cell
   def show_direct_route options={}
-    require 'pp'
     map unless is_mapped?
     start_cell= current_cell= options[:start_cell] || random_cell
     end_cell=                 options[:end_cell]   || random_cell

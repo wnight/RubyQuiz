@@ -256,6 +256,7 @@ class Maze
       cell.set_distance distance
       begin ; print `clear` ; set_highlight cell ; display options ; sleep delay ; end if watch
     }
+    board.flatten.compact.each {|cell| cell.instance_variable_set :@walked_on, false }
     set_highlight nil if watch
   end 
 

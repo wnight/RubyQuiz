@@ -170,7 +170,7 @@ class Maze
   def unhighlight_all
     board.each_index {|l|
       board[l].each_index {|w|
-        board[l][w].set_highlight false
+        board[l][w].set_highlight false if board[l][w]
       }
     }
   end

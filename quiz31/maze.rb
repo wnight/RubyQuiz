@@ -262,7 +262,7 @@ class Maze
   #options[] keys; :start_cell, :end_cell
   def show_direct_route options={}
     require 'pp'
-    raise "Must solve() maze first" unless is_solved?
+    map unless is_mapped?
     start_cell= current_cell= options[:start_cell] || random_cell
     end_cell=                 options[:end_cell]   || random_cell
     start_stack=end_stack= []

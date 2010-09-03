@@ -392,7 +392,7 @@ class Maze
     unless solved?
       cell.walk_on # only store footprints while trying to solve the maze
       @move_log ||= []
-      @move_log << cell
+      @move_log << cell unless @move_log.member?(cell)
     end
     set_highlight cell
   end
@@ -520,12 +520,13 @@ class Maze
             when /^r/ ; load __FILE__
             when /^u/
                 next unless ml = maze.move_log
-                ml = ml.dup
+                ml = ml[0...ml.index(maze.highlighted_cell)] # trim path this cell and everything after - go further back
+                ml = [maze.highlighted_cell] unless ml
                 move = ml.pop
                 loop do
                     break if move.not_walked_on_neighbors.length > 0
                     break unless move = ml.pop
-                end
+                end if move
                 next unless move
                 maze.move_to_cell move
             end

@@ -246,7 +246,7 @@ class Maze
     [num, branches, (num / branches.to_f), walked_on, branches_passed, unreachable]
   end
 
-  def solve options = {}
+  def map options = {}
     watch = options[:watch]
     delay = options[:delay].to_f || 0.2
     return false unless generated
@@ -341,12 +341,11 @@ class Maze
     nil
   end
 
-  #I expected solved?() to return true or false depending on if the maze was
-  #solved or not, but it bahaves differently, so I wrote my own method for it.
-  def is_solved?
-    #This works based on the assumption that solve() has been run and that it
-    #walks on each cell in the process.
-    random_cell.walked_on?
+  def is_mapped?
+    @mapped ||= begin
+      true if board.flatten.compact.all? {|cell| cell.distance }
+    end
+    @mapped.true?
   end
 
   def solved?

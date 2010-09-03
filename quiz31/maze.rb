@@ -290,13 +290,11 @@ class Maze
       end_stack<< current_cell
     end
  
-    start_stack=start_stack.reverse.delete_if {|cell|
-      end_stack.include? cell }
-    end_stack=end_stack.reverse.delete_if {|cell|
-      end_stack.include? cell }
+    path = start_stack.reverse + end_stack
+    common = (start_stack & end_stack).sort_by {|cell| cell.distance }
+    path = path - common[0...-1]
 
-    start_stack.each {|cell| cell.set_highlight }
-    end_stack.each   {|cell| cell.set_highlight }
+    path.each {|cell| cell.set_highlight }
     display
   end
 

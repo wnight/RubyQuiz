@@ -575,7 +575,7 @@ class Maze
             when /^n/ ; maze.setup_board options ; board.clear if board
             when /^c/ ; options[:circular] = !options[:circular]
             when /^g/ ; maze.generate(options)
-            when /^s/ ; maze.solve(options)
+            when /^s/ ; maze.show_direct_route(options)
             when /^;/ ; out.call run_command(maze, options)
             when /^D/ ; options[:darkness] = !options[:darkness]
             when /^(\d+)\s?,\s?(\d+)$/ ; maze.setup_board options.merge!({:length => $1, :width => $2}) ; board.clear if board

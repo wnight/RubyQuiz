@@ -331,8 +331,8 @@ class Maze
   #options[] keys; :start_cell, :end_cell
   def show_direct_route options={}
     map unless is_mapped?
-    start_cell= options[:start_cell] || random_cell
-    end_cell=   options[:end_cell]   || random_cell
+    start_cell= options[:start_cell] || self.start_cell || random_cell
+    end_cell=   options[:end_cell]   || self.end_cell   || random_cell
     unhighlight_all
 
     start_stack = [current_cell = start_cell]

@@ -595,9 +595,9 @@ class Maze
                 end if move
                 next unless move
                 maze.move_to_cell move
-            end
           end
-          maze
+        end
+        maze
       ensure
         if options[:curses]
           VER::stop_ncurses

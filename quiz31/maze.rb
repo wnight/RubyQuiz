@@ -364,6 +364,7 @@ class Maze
 
     path.each {|cell| cell.set_highlight }
     display options
+    path
   end
 
   def crawl(starting_cell, get_neighbors)

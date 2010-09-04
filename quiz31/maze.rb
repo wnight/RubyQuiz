@@ -130,7 +130,7 @@ class Cell
 end
 
 class Maze
-  attr_reader :board, :length, :width, :highlighted_cell, :generated, :start_cell, :end_cell
+  attr_reader :board, :length, :width, :highlighted_cell, :generated, :start_cell, :end_cell, :move_log
 
 	def initialize options = {}
     setup_board options
@@ -143,7 +143,8 @@ class Maze
   def setup_board options = {}
     length, width = options[:length], options[:width]
     raise "length and width must be fixnums greater than zero" unless [length, width].all? {|n| n.respond_to?(:to_i) && !n.to_i.zero? }
-    @length, @width = [length, width].collect {|n| n.to_i }
+    length, width = [length, width].collect {|n| n.to_i }
+    @length, @width = length, width
     wipe_designations
     circular = options[:circular]
 		@board=[[]]
@@ -355,12 +356,17 @@ class Maze
     @solved.true?
   end
 
+  def move_to_cell cell
+    cell.walk_on unless solved? # only store footprints while trying to solve the maze
+    @move_log ||= []
+    @move_log << cell
+    set_highlight cell
+  end
+
   def move dir
     return false unless cell = highlighted_cell
     new = cell.neighbors[dir] if cell.passable?(dir,false)
-    return false unless new
-    new.walk_on unless solved? # only store footprints while trying to solve the maze
-    set_highlight new
+    move_to_cell new if new
   end
 
   def self.play maze = nil, options = {}
@@ -400,6 +406,17 @@ class Maze
         when /^([123])$/ ; options[:cell_display_size] = $1.to_i
         when /^d(elay)?(=|\s?)([0-9.]+)/ ; options[:delay] = $3.to_f ; result = "Delay is #{options[:delay]}"
         when /^([ijkl])/ ; maze.move dirs = {'i' => :north, 'j' => :west, 'k' => :south, 'l' => :east}[$1] if maze.highlighted_cell
+        when /^f/ ; choices = maze.highlighted_cell.not_walked_on_neighbors ; next unless choices.length == 1 ; maze.move choices.first.first
+        when /^r/ ; load __FILE__
+        when /^u/
+            ml = maze.move_log.dup
+            move = ml.pop
+            loop do
+                break if move.not_walked_on_neighbors.length > 0
+                break unless move = ml.pop
+            end
+            next unless move
+            maze.move_to_cell move
       end
     end
     maze

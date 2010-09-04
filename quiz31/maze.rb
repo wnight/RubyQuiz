@@ -55,9 +55,10 @@ class Cell
 		@neighbors= {}
     @walked_on=false
     @highlight=false
+    @distance=nil
 	end
 
-	attr_reader :neighbors, :walls, :highlight
+	attr_reader :neighbors, :walls, :distance, :highlight
   attr_accessor :contents
 
   def walked_on? ; @walked_on ; end
@@ -65,6 +66,10 @@ class Cell
   def set_highlight state = true ; @highlight = state ; end
   def unset_highlight ; set_highlight false ; end
   def highlight? ; @highlight ; end
+
+  def set_distance distance
+    @distance=distance
+  end
 
 	def set_wall direction, state = true, both = true
     direction = direction.to_sym
@@ -228,6 +233,14 @@ class Maze
     nil
   end
 
+  def unhighlight_all
+    board.each_index {|l|
+      board[l].each_index {|w|
+        board[l][w].set_highlight false if board[l][w]
+      }
+    }
+  end
+
   def set_highlight cell
     @highlighted_cell.unset_highlight if @highlighted_cell
     return if (@highlighted_cell = cell).nil?
@@ -277,6 +290,7 @@ class Maze
     end while !list.empty?
     set_highlight nil if watch
     @generated = true
+    map
   end
 
   def stats
@@ -299,30 +313,74 @@ class Maze
     [num, branches, (num / branches.to_f), walked_on, branches_passed, unreachable]
   end
 
-  def solve options = {}
+  def map options = {}
+    return true if is_mapped?
     watch = options[:watch]
     delay = options[:delay].to_f || 0.2
     return false unless generated
     starting_cell = random_cell
-    crawl( starting_cell, 'not_walked_on_neighbors' ) {|cell, dir|
+    crawl( starting_cell, 'not_walked_on_neighbors' ) {|cell, dir, distance|
       cell.walk_on
       begin ; set_highlight cell ; display options ; sleep delay ; end if watch
+      cell.set_distance distance
     }
+    board.flatten.compact.each {|cell| cell.instance_variable_set :@walked_on, false }
     set_highlight nil if watch
   end
 
+  #options[] keys; :start_cell, :end_cell
+  def show_direct_route options={}
+    map unless is_mapped?
+    start_cell= options[:start_cell] || random_cell
+    end_cell=   options[:end_cell]   || random_cell
+    unhighlight_all
+
+    start_stack = [current_cell = start_cell]
+    distance=current_cell.distance
+    until distance==0 do
+      temp=current_cell.neighbors.select {|dir, cell|
+        next unless current_cell.passable? dir
+        cell.distance == distance-1
+      }[0][1]
+      distance-=1
+      current_cell=temp
+      start_stack<< current_cell
+    end
+
+    end_stack = [current_cell = end_cell]
+    distance=current_cell.distance
+    until distance==0 do
+      current_cell=current_cell.neighbors.select {|dir, cell|
+        next unless current_cell.passable? dir
+        cell.distance == distance-1
+      }[0][1]
+      distance-=1
+      end_stack<< current_cell
+    end
+ 
+    path = start_stack.reverse + end_stack
+    common = (start_stack & end_stack).sort_by {|cell| cell.distance }
+    path = path - common[0...-1]
+
+    path.each {|cell| cell.set_highlight }
+    display options
+  end
+
   def crawl(starting_cell, get_neighbors)
+    distance=0
     list = [ starting_cell ]
     begin
       cell=list.last
       neighbors= cell.send(get_neighbors.to_sym)
       if neighbors.empty?
-        yield cell,nil
+        yield cell,nil,distance
         list.pop
+        distance-=1
       else
         dir, other = neighbors.random
-        yield cell, dir
+        yield cell, dir, distance
         list << other
+        distance+=1
       end
     end while !list.empty?
   end
@@ -381,10 +439,18 @@ class Maze
     nil
   end
 
+  def is_mapped?
+    @mapped ||= begin
+      true if board.flatten.compact.all? {|cell| cell.distance }
+    end
+    @mapped.true?
+  end
+
   def solved?
     @solved ||= begin
       true if highlighted_cell && highlighted_cell == end_cell # only return and nil, so as not to cache a false
     end
+    @solved.true?
   end
 
   def move_to_cell cell
